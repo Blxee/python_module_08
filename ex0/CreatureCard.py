@@ -1,4 +1,5 @@
 from ex0.Card import Card
+from sys import stderr
 
 
 class CreatureCard(Card):
@@ -14,13 +15,22 @@ class CreatureCard(Card):
         attack: int,
         health: int,
     ) -> None:
-        """Constructor for CreatureCard class."""  # noqa: D401
+        """Constructor for CreatureCard class."""
         super().__init__(name, cost, rarity)
+        if not isinstance(attack, int) or not isinstance(health, int):
+            print(f"[Error]: invalid argument type to {self.__class__.__name__}.", file=stderr)
+            exit(1)
+        if attack < 0 or health < 0:
+            print("[Error]: attack and health must be positive.", file=stderr)
+            exit(1)
         self.attack: int = attack
         self.health: int = health
 
     def play(self, game_state: dict) -> dict:
         """Play the card using the current game stats."""
+        if not isinstance(game_state, dict):
+            print(f"[Error]: invalid argument type to play.", file=stderr)
+            exit(1)
         available_mana = game_state.get("available_mana", 0)
 
         if self.is_playable(available_mana):
@@ -35,6 +45,9 @@ class CreatureCard(Card):
             }
 
     def attack_target(self, target: "CreatureCard") -> dict:
+        if not isinstance(target, CreatureCard):
+            print(f"[Error]: invalid argument type to attack_target.", file=stderr)
+            exit(1)
         """Make the creature card attack."""
         target.health -= self.attack
 
