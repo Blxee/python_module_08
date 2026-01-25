@@ -5,17 +5,26 @@ def main() -> None:
     """Test the elitecard"""
     print("\n=== DataDeck Ability System ===")
     print("\nEliteCard capabilities:")
-    # print methods of each of card, magical, combatant
 
-    arcane_warrior: EliteCard = EliteCard("Arcane Warrior")
+    arcane_warrior: EliteCard = EliteCard("Arcane Warrior", 4, "rare", 5, 3, 10)
+    enemy: EliteCard = EliteCard("Enemy", 2, "common", 3, 1, 4)
+    # print methods of each of card, magical, combatant
+    interfaces = type(arcane_warrior).__bases__
+    for base in interfaces:
+        methods = [name for name, attr in vars(base).items() if callable(attr) and not name.startswith("__")]
+        print(f"- {base.__name__}: {methods}")
+    # try combat methods
     print(f"\nPlaying {arcane_warrior.name} (Elite Card):")
     print("\nCombat phase:")
-    print("Attack result:", arcane_warrior.attack())
-    print("Defense result:", arcane_warrior.defend())
+    print("Attack result:", arcane_warrior.attack(enemy))
+    print("Defense result:", arcane_warrior.defend(5))
 
+    # try magical methods
     print("\nMagic phase:")
-    print("Spell cast:", arcane_warrior.cast_spell())
-    print("Mana channel:", arcane_warrior.channel_mana())
+    enemy1: EliteCard = EliteCard("Enemy1", 2, "common", 3, 1, 4)
+    enemy2: EliteCard = EliteCard("Enemy2", 2, "common", 3, 1, 4)
+    print("Spell cast:", arcane_warrior.cast_spell("Fireball", [enemy1, enemy2]))
+    print("Mana channel:", arcane_warrior.channel_mana(3))
     print("\nMultiple interface implementation successful!")
 
 
@@ -24,27 +33,3 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         print("[Error]:", error)
-"""
-
-=== DataDeck Ability System ===
-
-EliteCard capabilities:
-- Card: ['play', 'get_card_info', 'is_playable']
-- Combatable: ['attack', 'defend', 'get_combat_stats']
-- Magical: ['cast_spell', 'channel_mana', 'get_magic_stats']
-
-Playing Arcane Warrior (Elite Card):
-
-Combat phase:
-Attack result: {'attacker': 'Arcane Warrior', 'target': 'Enemy',
-'damage': 5, 'combat_type': 'melee'}
-Defense result: {'defender': 'Arcane Warrior', 'damage_taken': 2,
-'damage_blocked': 3, 'still_alive': True}
-
-Magic phase:
-Spell cast: {'caster': 'Arcane Warrior', 'spell': 'Fireball',
-'targets': ['Enemy1', 'Enemy2'], 'mana_used': 4}
-Mana channel: {'channeled': 3, 'total_mana': 7}
-
-Multiple interface implementation successful!
-"""
