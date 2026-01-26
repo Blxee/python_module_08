@@ -1,8 +1,9 @@
 from sys import stderr
 from importlib.metadata import version, metadata, PackageNotFoundError
 
+
 def main() -> None:
-    """"""
+    """Demonstrate pip and poetry usage."""
     packages: list[str] = ["pandas", "requests", "matplotlib"]
     packages_installed = True
 
@@ -31,27 +32,32 @@ To install the missing dependencies, you can either:
     print("all packages are installed")
 
     file_name: str = "matrix_analysis.png"
+    import requests
+    from pandas import DataFrame
+    import matplotlib.pyplot as plt
+
+    products = requests.get("https://dummyjson.com/products").json()[
+        "products"
+    ]
+    print(f"""
+Analyzing Matrix data...
+Processing {len(products)} data points...
+Generating visualization...
+
+Analysis complete!
+Results saved to: {file_name}""")
+
+    data_fram: DataFrame = DataFrame(products)
+    data_fram.plot.scatter(x="price", y="rating")
+    plt.xlabel("Price")
+    plt.xscale("log")
+    plt.ylabel("Rating")
+    plt.title("Product price vs rating")
+    plt.savefig(file_name)
+
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as error:
         print("[Error]:", error, file=stderr)
-
-"""
-$> python loading.py
-
-LOADING STATUS: Loading programs...
- 
-Checking dependencies:
-[OK] pandas (2.1.0) - Data manipulation ready
-[OK] requests (2.31.0) - Network access ready
-[OK] matplotlib (3.7.2) - Visualization ready
-
-Analyzing Matrix data...
-Processing 1000 data points...
-Generating visualization...
-
-Analysis complete!
-Results saved to: matrix_analysis.png
-"""
