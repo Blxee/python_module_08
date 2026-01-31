@@ -1,43 +1,55 @@
 from importlib.metadata import version, PackageNotFoundError
 from sys import stderr
+from os import environ
 
 
 def main() -> None:
     """Load .env file into environ."""
+    # check if dotenv is installed
     try:
         version("python-dotenv")
-        from dotenv import load_dotenv
-        from os import environ
+    except PackageNotFoundError:
+        print(
+            """\
+    [Error]: python-dotenv is not installed..
+    To install it, please run 'pip install python-dotenv'""",
+            file=stderr,
+        )
+        exit(1)
 
-        config: dict[str, str | None] = {
-            "MATRIX_MODE": None,
-            "DATABASE_URL": None,
-            "API_KEY": None,
-            "LOG_LEVEL": None,
-            "ZION_ENDPOINT": None,
-        }
+    from dotenv import load_dotenv
 
-        # load the .env file into the environ dict.
-        load_dotenv(override=False)
+    config: dict[str, str | None] = {
+        "MATRIX_MODE": None,
+        "DATABASE_URL": None,
+        "API_KEY": None,
+        "LOG_LEVEL": None,
+        "ZION_ENDPOINT": None,
+    }
 
-        fields_present = True
-        for field in config.copy():
-            value = environ.get(field, "")
-            if len(value) == 0:
-                fields_present = False
-                print(
-                    f"[Error]: var not found: \x1b[31m{field}\x1b[0m",
-                    file=stderr,
-                )
-            else:
-                config[field] = value
+    # load the .env file into the environ dict.
+    load_dotenv(override=False)
 
-        if not fields_present:
-            print("""Define the configurations in the .env file
-or in using the shell as follow: 'VAR=val python3 oracle.py'""")
-            exit(1)
+    # check if all fields are present
+    fields_present = True
+    for field in config.copy():
+        value = environ.get(field, "")
+        if len(value) == 0:
+            fields_present = False
+            print(
+                f"[Error]: var not found: \x1b[31m{field}\x1b[0m",
+                file=stderr,
+            )
+        else:
+            config[field] = value
 
-        print(f"""
+    if not fields_present:
+        print("""Define the configurations in the .env file
+or in the environment using the shell as follow:\
+'VAR=val python3 oracle.py'""")
+        exit(1)
+
+    print(f"""
 ORACLE STATUS: Reading the Matrix...
 
 Configuration loaded:
@@ -53,14 +65,6 @@ Environment security check:
 [OK] Production overrides available
 
 The Oracle sees all configurations.""")
-
-    except PackageNotFoundError:
-        print(
-            """\
-    [Error]: python-dotenv is not installed..
-    To install it, please run 'pip install python-dotenv'""",
-            file=stderr,
-        )
 
 
 if __name__ == "__main__":
