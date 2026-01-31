@@ -4,9 +4,11 @@ from importlib.metadata import version, metadata, PackageNotFoundError
 
 def main() -> None:
     """Demonstrate pip and poetry usage."""
+    # define the list of depenedencies
     packages: list[str] = ["pandas", "requests", "matplotlib"]
     packages_installed = True
 
+    # check if all packages are available
     for package in packages:
         try:
             ver = version(package)
@@ -31,11 +33,13 @@ To install the missing dependencies, you can either:
 
     print("all packages are installed")
 
-    file_name: str = "matrix_analysis.png"
     import requests
     from pandas import DataFrame
     import matplotlib.pyplot as plt
 
+    file_name: str = "matrix_analysis.png"
+
+    # query the dummyjson api for some dummy json data
     products = requests.get("https://dummyjson.com/products").json()[
         "products"
     ]
@@ -47,12 +51,15 @@ Generating visualization...
 Analysis complete!
 Results saved to: {file_name}""")
 
+    # create a pandas datafram from the list of products
     data_fram: DataFrame = DataFrame(products)
+    # plot the received data using matplotlib
     data_fram.plot.scatter(x="price", y="rating")
     plt.xlabel("Price")
     plt.xscale("log")
     plt.ylabel("Rating")
     plt.title("Product price vs rating")
+    # save the graph to file_name
     plt.savefig(file_name)
 
 
