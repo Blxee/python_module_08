@@ -6,7 +6,10 @@ from sys import stderr
 
 def main() -> None:
     """Entry point of the script."""
+    # if prefix is different than the base_prefix,
+    # we are inside a virual environment.
     if prefix == base_prefix:
+        # excutable return the path of the excutable
         print(f"""
 MATRIX STATUS: You're still plugged in
 
@@ -25,11 +28,14 @@ activate # On Windows
 
 Then run this program again.""")
     else:
+        # get the name of the env using the env variable "VIRTUAL_ENV"
+        environment_name: str = path.basename(environ.get("VIRTUAL_ENV", ""))
+        # getsitepackages() return a list of site packages locations
         print(f"""
 MATRIX STATUS: Welcome to the construct
 
 Current Python: {executable}
-Virtual Environment: {path.basename(environ.get("VIRTUAL_ENV", ""))}
+Virtual Environment: {environment_name}
 Environment Path: {prefix}
 
 SUCCESS: You're in an isolated environment!
