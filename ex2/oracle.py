@@ -17,7 +17,6 @@ def main() -> None:
             "ZION_ENDPOINT": None,
         }
 
-
         # load the .env file into the environ dict.
         load_dotenv(override=False)
 
@@ -26,7 +25,10 @@ def main() -> None:
             value = environ.get(field, "")
             if len(value) == 0:
                 fields_present = False
-                print(f"[Error]: var not found: \x1b[31m{field}\x1b[0m", file=stderr)
+                print(
+                    f"[Error]: var not found: \x1b[31m{field}\x1b[0m",
+                    file=stderr,
+                )
             else:
                 config[field] = value
 
@@ -39,10 +41,10 @@ or in using the shell as follow: 'VAR=val python3 oracle.py'""")
 ORACLE STATUS: Reading the Matrix...
 
 Configuration loaded:
-Mode: {config['MATRIX_MODE']}
+Mode: {config["MATRIX_MODE"]}
 Database: Connected to local instance
 API Access: Authenticated
-Log Level: {config['LOG_LEVEL']}
+Log Level: {config["LOG_LEVEL"]}
 Zion Network: Online
 
 Environment security check:
@@ -53,9 +55,12 @@ Environment security check:
 The Oracle sees all configurations.""")
 
     except PackageNotFoundError:
-        print("""\
+        print(
+            """\
     [Error]: python-dotenv is not installed..
-    To install it, please run 'pip install python-dotenv'""", file=stderr)
+    To install it, please run 'pip install python-dotenv'""",
+            file=stderr,
+        )
 
 
 if __name__ == "__main__":
